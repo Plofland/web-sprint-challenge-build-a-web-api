@@ -9,7 +9,7 @@ server.use('/api/projects', projectsRouter)
 server.use('/api/actions', actionsRouter)
 
 server.get('/', (req, res) => {
-  res.send(`<h2>Server is up and running!</h2>`)
+  res.send(`<h2>Server is up and taking requests!</h2>`)
 })
 
 module.exports = server;
