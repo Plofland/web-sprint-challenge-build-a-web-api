@@ -21,10 +21,20 @@ const validateId = async (req, res, next) => {
   }
 };
 
-// const validActionsPost = async (req, res, next) => {
-
-// }
+const validateActionPost = async (req, res, next) => {
+  const { project_id, description, notes } = req.body
+  try {
+    if(!project_id || !description || !notes) {
+      res.status(400).json({message: `For your action, please enter a Project Id, Description, & Notes`})
+    } else {
+      next();
+    }
+  } catch (error) {
+    res.status(500).json(`Server error: ${error}`)
+  }
+}
 
 module.exports = {
-  validateId
+  validateId,
+  validateActionPost
 };

@@ -1,6 +1,9 @@
 const express = require('express');
 const actionsFunc = require('./actions-model');
-const { validateId } = require('../middleware/middleware');
+const {
+  validateId,
+  validateActionPost
+} = require('../middleware/middleware');
 
 const router = express.Router();
 
@@ -17,8 +20,14 @@ router.get('/:id', validateId, async (req, res) => {
   res.status(200).json(req.actionId);
 });
 
-router.post('/', (req, res) => {
-  //!returns the newly created action as the body of the response.
+router.post('/', validateActionPost, async (req, res, next) => {
+  try {
+    const actionInfo = req.body;
+    const data = await actionsFunc.insert(actionInfo);
+    res.json(data)
+  } catch (error) {
+    next(error)
+  }
 });
 
 router.put('/:id', (req, res) => {
