@@ -1,7 +1,8 @@
 const express = require('express');
 const projectsFunc = require('./projects-model');
 const {
-  validateProjectId
+  validateProjectId,
+  validateProjectPost
 } = require('../middleware/middleware');
 
 const router = express.Router();
@@ -31,16 +32,30 @@ router.post('/', async (req, res, next) => {
   }
 });
 
-router.put('/:id', (req, res) => {
-  //!returns the updated project as the body of the response.
+router.put('/:id', validateProjectId, validateProjectPost, async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const changes = req.body;
+    const data = await projectsFunc.update(id, changes);
+    res.json(data)
+  } catch (error) {
+    next(error)
+  }
 });
 
-router.delete('/', (req, res) => {
-  //!returns no response body.
+router.delete('/:id', validateProjectId, async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const data = await projectsFunc.remove(id);
+    res.json(data)
+  } catch (error) {
+    next(error)
+  }
 });
 
-router.get('/:id/actions', (req, res) => {
+router.get('/:id/actions', validateProjectId, (req, res) => {
   //!sends an array of actions (or an empty array) as the body of the response.
+  res.status(200).json(req.projectId.actions);
 });
 
 router.use((error, req, res, next) => {

@@ -2,9 +2,8 @@ const projectsFunc = require('../projects/projects-model');
 const actionsFunc = require('../actions/actions-model');
 
 //*Plan out the middleware that I will be needing before I write out anything
-//todo: validate project to be posted to server
 
-const validateId = async (req, res, next) => {
+const validateActionId = async (req, res, next) => {
   const { id } = req.params;
   try {
     const actionId = await actionsFunc.get(id);
@@ -67,7 +66,7 @@ const validateProjectPost = (req, res, next) => {
 
 
 module.exports = {
-  validateId,
+  validateActionId,
   validateActionPost,
   validateProjectId,
   validateProjectPost

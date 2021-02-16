@@ -1,7 +1,7 @@
 const express = require('express');
 const actionsFunc = require('./actions-model');
 const {
-  validateId,
+  validateActionId,
   validateActionPost
 } = require('../middleware/middleware');
 
@@ -16,7 +16,7 @@ router.get('/', async (req, res, next) => {
   }
 });
 
-router.get('/:id', validateId, async (req, res) => {
+router.get('/:id', validateActionId, async (req, res) => {
   res.status(200).json(req.actionId);
 });
 
@@ -30,7 +30,7 @@ router.post('/', validateActionPost, async (req, res, next) => {
   }
 });
 
-router.put('/:id', validateId, validateActionPost, async (req, res, next) => {
+router.put('/:id', validateActionId, validateActionPost, async (req, res, next) => {
   try {
     const { id } = req.params;
     const changes = req.body;
@@ -41,7 +41,7 @@ router.put('/:id', validateId, validateActionPost, async (req, res, next) => {
   }
 });
 
-router.delete('/:id', async (req, res, next) => {
+router.delete('/:id', validatActionId, (req, res, next) => {
   try {
     const { id } = req.params;
     const data = await actionsFunc.remove(id);
