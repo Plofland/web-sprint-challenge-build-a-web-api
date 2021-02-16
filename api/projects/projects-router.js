@@ -1,20 +1,34 @@
 const express = require('express');
 const projectsFunc = require('./projects-model');
+const {
+  validateProjectId
+} = require('../middleware/middleware');
 
 const router = express.Router();
 
 //*Write out the endpoints that I'll need before writing out the code for each route
 
-router.get('/', (req, res) => {
-  //!returns an array of projects (or an empty array) as the body of the response.
+router.get('/', async (req, res, next) => {
+  try {
+    const data = await projectsFunc.get();
+    res.json(data);
+  } catch (error) {
+    next(error);
+  }
 });
 
-router.get('/:id', (req, res) => {
-  //!returns a project with the given id as the body of the response
+router.get('/:id', validateProjectId, (req, res) => {
+  res.status(200).json(req.projectId);
 });
 
-router.post('/', (req, res) => {
-  //!returns the newly created project as the body of the response.
+router.post('/', async (req, res, next) => {
+  try {
+    const projectInfo = req.body;
+    const data = await projectsFunc.insert(projectInfo);
+    res.json(data)
+  } catch (error) {
+    next(error)
+  }
 });
 
 router.put('/:id', (req, res) => {
@@ -27,6 +41,12 @@ router.delete('/', (req, res) => {
 
 router.get('/:id/actions', (req, res) => {
   //!sends an array of actions (or an empty array) as the body of the response.
+});
+
+router.use((error, req, res, next) => {
+  res
+    .status(500)
+    .json({ message: error.message, stack: error.stack });
 });
 
 module.exports = router;

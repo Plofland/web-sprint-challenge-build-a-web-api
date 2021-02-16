@@ -2,7 +2,7 @@ const projectsFunc = require('../projects/projects-model');
 const actionsFunc = require('../actions/actions-model');
 
 //*Plan out the middleware that I will be needing before I write out anything
-//todo: validat ID, validate action to be posted to server, validate project to be posted to server
+//todo: validate project to be posted to server
 
 const validateId = async (req, res, next) => {
   const { id } = req.params;
@@ -21,7 +21,24 @@ const validateId = async (req, res, next) => {
   }
 };
 
-const validateActionPost = async (req, res, next) => {
+const validateProjectId = async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    const projectId = await projectsFunc.get(id);
+    if (!projectId) {
+      res.status(400).json({
+        message: `No project with the id of ${id}`
+      });
+    } else {
+      req.projectId = projectId;
+      next();
+    }
+  } catch (error) {
+    res.status(500).json(`Server error: ${error}`);
+  }
+};
+
+const validateActionPost = (req, res, next) => {
   const { project_id, description, notes } = req.body
   try {
     if(!project_id || !description || !notes) {
@@ -32,9 +49,26 @@ const validateActionPost = async (req, res, next) => {
   } catch (error) {
     res.status(500).json(`Server error: ${error}`)
   }
-}
+};
+
+const validateProjectPost = (req, res, next) => {
+  const { name, description } = req.body
+  try {
+    if(!name || !description) {
+      res.status(400).json({message: `For your project, please enter a Name & Description`})
+    } else {
+      next();
+    }
+  } catch (error) {
+    res.status(500).json(`Server error: ${error}`)
+  }
+};
+
+
 
 module.exports = {
   validateId,
-  validateActionPost
+  validateActionPost,
+  validateProjectId,
+  validateProjectPost
 };
