@@ -30,12 +30,25 @@ router.post('/', validateActionPost, async (req, res, next) => {
   }
 });
 
-router.put('/:id', (req, res) => {
-  //!returns the updated action as the body of the response.
+router.put('/:id', validateId, validateActionPost, async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const changes = req.body;
+    const data = await actionsFunc.update(id, changes);
+    res.json(data)
+  } catch (error) {
+    next(error)
+  }
 });
 
-router.delete('/:id', (req, res) => {
-  //!returns no response body.
+router.delete('/:id', async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const data = await actionsFunc.remove(id);
+    res.json(data)
+  } catch (error) {
+    next(error)
+  }
 });
 
 router.use((error, req, res, next) => {
