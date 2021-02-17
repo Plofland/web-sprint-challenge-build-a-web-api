@@ -41,7 +41,7 @@ router.put('/:id', validateActionId, validateActionPost, async (req, res, next) 
   }
 });
 
-router.delete('/:id', validatActionId, (req, res, next) => {
+router.delete('/:id', validateActionId, async (req, res, next) => {
   try {
     const { id } = req.params;
     const data = await actionsFunc.remove(id);
@@ -51,7 +51,7 @@ router.delete('/:id', validatActionId, (req, res, next) => {
   }
 });
 
-router.use((error, req, res, next) => {
+router.use((error, req, res) => {
   res
     .status(500)
     .json({ message: error.message, stack: error.stack });

@@ -7,8 +7,6 @@ const {
 
 const router = express.Router();
 
-//*Write out the endpoints that I'll need before writing out the code for each route
-
 router.get('/', async (req, res, next) => {
   try {
     const data = await projectsFunc.get();
@@ -58,7 +56,7 @@ router.get('/:id/actions', validateProjectId, (req, res) => {
   res.status(200).json(req.projectId.actions);
 });
 
-router.use((error, req, res, next) => {
+router.use((error, req, res) => {
   res
     .status(500)
     .json({ message: error.message, stack: error.stack });
